@@ -1,0 +1,14 @@
+title: "sprql"
+description: ""
+baseurl: ""
+url: "https://sprql.space"
+copyright: "sprql"
+markdown: kramdown
+theme: minima
+gems:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+exclude:
+  - Gemfile
+  - Gemfile.lock
