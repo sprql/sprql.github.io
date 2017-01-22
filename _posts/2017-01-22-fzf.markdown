@@ -1,0 +1,13 @@
+---
+layout:  post
+title:   "fzf"
+date:    2017-01-22 00:00:00 +0000
+excerpt: "General-purpose command-line fuzzy finder."
+---
+
+I like fish - shell that works straight out of the box.
+But I really miss the feature which the zsh and the bash have. It's reverse history search (ctrl+r).
+
+But there is a solution — [fzf](https://github.com/junegunn/fzf) — general-purpose command-line fuzzy finder.
+
+Fzf works not only with shells but with some editors, for example - vim.
