@@ -1,0 +1,13 @@
+---
+layout:  post
+title:   "StandUp"
+date:    2017-01-24 00:00:00 +0000
+excerpt: "Timer app that limits the time of continuous sitting at the computer"
+---
+
+Sometimes I use a time management method [Pomodoro Technique] in my work. There are many applications which help to follow this method. One of those I used. But I noticed that often I forget to start the timer after a break, or simply ignore it and continue to work. So I realized that the need to create yet another time management app — [StandUp].
+
+After launching StandUp goes into "work" mode for 25 minutes, then the work time is out the app go to "break" mode. The screen is blocked by a translucent window with countdown for 5 minute, wherein the keyboard and the mouse active, which allows you to complete tasks if necessary. Continue to work in this mode is not comfortable, what motivates you to stand up from the computer. After 5 minutes you can continue working and the program will automatically begin a new "work" countdown.
+
+[Pomodoro Technique]: https://en.wikipedia.org/wiki/Pomodoro_Technique
+[StandUp]: https://sprql.github.io/StandUp
