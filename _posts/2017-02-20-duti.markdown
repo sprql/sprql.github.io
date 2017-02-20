@@ -1,0 +1,28 @@
+---
+layout:  post
+title:   "duti"
+date:    2017-02-20 00:00:00 +0000
+excerpt: "A command-line tool to select default applications for document types and URL schemes on Mac OS X"
+---
+
+With [duti] you can set the default application for a document type or for a URL scheme.
+
+- Install: `brew install duti`
+- Create config file `vim ~/.duti`:
+
+        # bundle id         UTI/ext/MIME type   role
+
+        com.apple.Safari    public.html         all
+        com.sublimetext.3   public.plain-text   all
+
+        # bundle id         URL scheme
+
+        org.mozilla.Firefox feed
+
+- Apply settings: `duti ~/.duti`
+- Enjoy!
+
+[duti]: http://duti.org
+
+
+
