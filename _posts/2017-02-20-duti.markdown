@@ -5,7 +5,7 @@ date:    2017-02-20 00:00:00 +0000
 excerpt: "A command-line tool to select default applications for document types and URL schemes on Mac OS X"
 ---
 
-With [duti] you can set the default application for a document type or for a URL scheme.
+With [duti] you can set the default application for a document type ([UTI]) or for a URL scheme.
 
 - Install: `brew install duti`
 - Create config file `vim ~/.duti`:
@@ -22,7 +22,9 @@ With [duti] you can set the default application for a document type or for a URL
 - Apply settings: `duti ~/.duti`
 - Enjoy!
 
+> PS. You can use [`mdls`] utility to determine [UTI] is for a specific file
+
 [duti]: http://duti.org
-
-
+[UTI]: https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
+[`mdls`]: https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/mdls.1.html
 
