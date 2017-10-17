@@ -1,0 +1,41 @@
+---
+layout:  post
+title:   "ElixirConf EU 2017"
+date:    2017-05-06 00:00:00 +0000
+excerpt: "Elixir Conference in Europe"
+image:   "https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f470_89fd4d99_XXL.jpg"
+---
+
+![May 4, 2017, Barceló Sants, Barclona](https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f470_89fd4d99_XXL.jpg)
+
+
+[Elixir conference][ElixirConf EU] took place in Barclona, Spain, on May 4.
+
+I had prepared to visit the conference by creating a little project [facecards][facecards]. The cards were really helpful for me. 
+
+The conference was useful and fun.
+I attended many interesting talks.
+
+![Keynote by José Valim](https://img-fotki.yandex.ru/get/880237/404254667.0/0_18f46e_73d236b1_XXL.jpg)
+
+![](https://img-fotki.yandex.ru/get/880237/404254667.0/0_18f541_e3cb9d3b_XXL.jpg)
+
+![](https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f53e_f10c3e98_XXL.jpg)
+
+It was a great opportunity to meet elixir core team, ask questions, and share ideas. 
+
+![](https://img-fotki.yandex.ru/get/921322/404254667.0/0_18f542_28fb5008_XXL.jpg)
+
+![](https://img-fotki.yandex.ru/get/892397/404254667.0/0_18f53f_53e2f47d_XXL.jpg)
+
+Thanks organizers for that warm and useful experience!
+
+![Afterparty](https://img-fotki.yandex.ru/get/898391/404254667.0/0_18f46f_5ca5045d_XXL.jpg)
+
+Have fun!
+
+P.S. [Talks from conference available on YouTube][Talks]
+
+[ElixirConf EU]: http://www.elixirconf.eu/elixirconf2017
+[facecards]: https://sprql.github.io/facecards/
+[Talks]: https://www.youtube.com/watch?v=IZvpKhA6t8A&list=PLWbHc_FXPo2jV6N5XEjbUQe2GkYcRkZdD&index=3
