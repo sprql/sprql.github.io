@@ -3,6 +3,7 @@ layout:  post
 title:   "duti"
 date:    2017-02-20 00:00:00 +0000
 excerpt: "A command-line tool to select default applications for document types and URL schemes on Mac OS X"
+image:   ""
 ---
 
 With [duti] you can set the default application for a document type ([UTI]) or for a URL scheme.

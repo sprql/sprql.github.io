@@ -3,6 +3,7 @@ layout:  post
 title:   "StandUp"
 date:    2017-01-24 00:00:00 +0000
 excerpt: "Timer app that limits the time of continuous sitting at the computer"
+image:   ""
 ---
 
 Sometimes I use a time management method [Pomodoro Technique] in my work. There are many applications which help to follow this method. One of those I used. But I noticed that often I forget to start the timer after a break, or simply ignore it and continue to work. So I realized that the need to create yet another time management app — [StandUp].

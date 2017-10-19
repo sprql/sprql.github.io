@@ -3,6 +3,7 @@ layout:  post
 title:   "tomlresume"
 date:    2017-02-12 00:00:00 +0000
 excerpt: "TOML-based standard for resumes"
+image:   ""
 ---
 
 There are many formats for creating a resume.

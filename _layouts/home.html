@@ -10,11 +10,17 @@ layout: default
     {% for post in site.posts %}
       <li>
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
         <h2>
-          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+          <a class="post-link" href="{{ post.url | relative_url }}">
+            {% if post.image != empty %}
+              <span class="post-image" style="background-image: url('{{ post.image }}')">
+              </span>
+            {% endif %}
+            <span class="post-title">
+              {{ post.title | escape }}
+            </span>
+          </a>
         </h2>
-
         <p>{{ post.excerpt | escape }}</p>
       </li>
     {% endfor %}

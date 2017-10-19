@@ -65,7 +65,30 @@ blockquote {
 }
 
 hr {
-    border: 0;
-    border-top: 1px solid $grey-color-light;
-    margin: 1em 0;
+  border: 0;
+  border-top: 1px solid $grey-color-light;
+  margin: 1em 0;
+}
+
+.post-list h2 {
+  margin: 0.75rem 0;
+  line-height: 1.25;
+}
+
+.post-list .post-title {
+  font-size: 1em;
+}
+
+.post-book-author {
+  color: $grey-color;
+  font-size: 0.7em;
+}
+
+.post-image {
+  display: block;
+  height: 15rem;
+  background-size: cover;
+  background-position: 50% 50%;
+  margin: 0 0 1rem;
+  border-radius: 0.15rem;
 }

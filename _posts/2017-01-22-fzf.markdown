@@ -3,6 +3,7 @@ layout:  post
 title:   "fzf"
 date:    2017-01-22 00:00:00 +0000
 excerpt: "General-purpose command-line fuzzy finder."
+image:   ""
 ---
 
 I like fish - shell that works straight out of the box.
