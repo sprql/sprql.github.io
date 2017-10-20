@@ -4,6 +4,7 @@ title:   "EUC17"
 date:    2017-06-10 00:00:00 +0000
 excerpt: "Erlang User Conference 2017"
 image:   "https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f55e_a2517737_XXL.jpg"
+cover: "https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f55e_a2517737_X5L.jpg"
 ---
 
 [Erlang User Conference 2017][EUC17] took place in Stockholm, Sweden, on June 8.

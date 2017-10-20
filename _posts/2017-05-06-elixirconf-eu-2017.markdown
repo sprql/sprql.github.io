@@ -4,10 +4,8 @@ title:   "ElixirConf EU 2017"
 date:    2017-05-06 00:00:00 +0000
 excerpt: "Elixir Conference in Europe"
 image:   "https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f470_89fd4d99_XXL.jpg"
+cover:   "https://img-fotki.yandex.ru/get/878955/404254667.0/0_18f5ac_d3f2d8c7_X5L.jpg"
 ---
-
-![May 4, 2017, Barceló Sants, Barclona](https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f470_89fd4d99_XXL.jpg)
-
 
 [Elixir conference][ElixirConf EU] took place in Barclona, Spain, on May 4.
 
