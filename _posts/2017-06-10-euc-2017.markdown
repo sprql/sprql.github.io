@@ -1,0 +1,34 @@
+---
+layout:  post
+title:   "EUC17"
+date:    2017-06-10 00:00:00 +0000
+excerpt: "Erlang User Conference 2017"
+image:   "https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f55e_a2517737_XXL.jpg"
+---
+
+[Erlang User Conference 2017][EUC17] took place in Stockholm, Sweden, on June 8.
+
+![](https://img-fotki.yandex.ru/get/369087/404254667.0/0_18f55c_8a54828b_XXL.jpg)
+
+![](https://img-fotki.yandex.ru/get/369087/404254667.0/0_18f560_21e32cc9_XXL.jpg)
+
+It was a great opportunity to learn some [LFE][LFE] from [Robert Virding][Robert Virding Twitter] at Ericsson HQ…
+
+![LFE Tutorial](https://img-fotki.yandex.ru/get/477594/404254667.0/0_18f562_a02b603e_XXL.jpg)
+
+To taste Scandinavia…
+
+![Lunch time](https://img-fotki.yandex.ru/get/484029/404254667.0/0_18f55d_d052c81_XXL.jpg)
+
+And meet interesting people…
+
+![There's hope](https://img-fotki.yandex.ru/get/874316/404254667.0/0_18f55f_735c2ce_XXL.jpg)
+
+![Afterparty](https://img-fotki.yandex.ru/get/370294/404254667.0/0_18f561_42c1493c_XXL.jpg)
+
+P.S. [Talks from conference available on YouTube][Talks]
+
+[EUC17]: http://www.erlang-factory.com/euc2017/
+[Talks]: https://www.youtube.com/watch?v=ktBlGj5gGUY&list=PLWbHc_FXPo2jAL3fm0YfN3nFVj6OyQcu2
+[LFE]: http://lfe.io
+[Robert Virding Twitter]: https://twitter.com/rvirding
