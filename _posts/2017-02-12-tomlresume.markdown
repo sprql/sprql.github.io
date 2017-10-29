@@ -6,22 +6,21 @@ excerpt: "TOML-based standard for resumes"
 image:   ""
 ---
 
+
 There are many formats for creating a resume.
-Some formats are easy to parse, some other are easy to read.
+Some formats are easy to parse, and some other are easy to read.
 
-To combine both properties usually use a machine readable format which is easy to convert to human-readable.
+To combine both properties usually use a machine-readable format which is easy to convert to human-readable.
 
-[JSON Resume] specification allows you to describe your resume in JSON, which is easy to parse and classify and easily create HTML, or even PDF version.
+[JSON Resume] specification allows you to describe your resume in JSON, which is easy to parse and classify and easily create HTML, or even PDF version. However, to write your resume in plain JSON is not so easy, as look for the first time - there's too much syntactical noise,  that's why you probably will use some UI/app for this, but then some of the flexibility of plain editing would be lost.
 
-However, to write your resume in JSON is not so easy, too much syntactical noise, and it's much easier to use some UI/app for this.
-
-But there is a more interesting option is to use [TOML] as resume format.
+Don't worry. There is a more exciting option here, is to use [TOML] as resume format.
 
 > TOML aims to be a minimal configuration file format that's easy to read due to obvious semantics.
 
 It is easy to parse, write, and read.
 
-So if you plan to update your resume is a good time to create your resume in the TOML format.
+So if you plan to update your resume is an excellent time to create your resume in the TOML format.
 
 And to simplify the work you can use project [tomlresume].
 
