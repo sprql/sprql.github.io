@@ -6,6 +6,14 @@ excerpt: "Curated list of geek comics"
 image:   ""
 ---
 
+#### xkcd
+
+![Thermostat](https://imgs.xkcd.com/comics/thermostat.png)
+
+[xkcd.com](https://xkcd.com)
+
+---
+
 #### CommitStrip
 
 ![The whole team’s working on it](https://www.commitstrip.com/wp-content/uploads/2017/09/Strip-La-super-équipe-de-maintenance-650-finalenglish.jpg)
