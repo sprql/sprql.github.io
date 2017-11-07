@@ -30,6 +30,15 @@ $on-laptop:        800px;
 // Import partials from the `minima` theme.
 @import "minima";
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: Ubuntu;
+}
+
+.site-header,
+.site-footer {
+  font-family: "Ubuntu";
+}
+
 .site-header {
   border-top: 5px solid #00D0FF;
 }
@@ -68,6 +77,10 @@ hr {
   border: 0;
   border-top: 1px solid $grey-color-light;
   margin: 1em 0;
+}
+
+.post-list > li {
+  margin-bottom: 5rem;
 }
 
 .post-list h2 {
