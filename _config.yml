@@ -5,6 +5,8 @@ url: "https://sprql.space"
 copyright: "sprql"
 markdown: kramdown
 theme: minima
+disqus:
+  shortname: sprql
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
