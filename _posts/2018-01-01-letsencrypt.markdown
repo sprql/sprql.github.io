@@ -3,7 +3,7 @@ layout:  post
 title:   "Let's Encrypt + nginx = https"
 date:    2018-01-01 00:00:00 +0000
 excerpt: "Short introduction how to obtain free SSL certificates for sites from letsencrypt.org"
-image:   "https://certbot.eff.org/images/certbot-logo-1A.svg"
+image:   ""
 ---
 
 Do You want to start using https for your sites?! There is nothing easier — thanks we have [Let's Encrypt][letsencrypt] project now!
@@ -69,10 +69,18 @@ IMPORTANT NOTES:
 
 Well done!
 
-How to configure nginx to use new certs see in my next post...
+How to configure nginx to use new certs see in [my next post about how to configure ssl in nginx][nginx-ssl].
+
+P.S. Don't forget to renew your certificates on time. Certificates from [letsencrypt][letsencrypt] issued for 3 months, so you should peridicaly run: 
+
+```
+certbot --renew
+```
+
 
 [letsencrypt]: https://letsencrypt.org
 [nginx]: https://nginx.org
 [srv-vs-var]: http://www.codeghar.com/blog/should-web-apps-go-in-srv-or-var-www.html 
 [certbot]: https://certbot.eff.org
 [acme]: https://tools.ietf.org/html/draft-ietf-acme-acme-09
+[nginx-ssl]: https://sprql.space/2018/01/02/nginx-ssl.html

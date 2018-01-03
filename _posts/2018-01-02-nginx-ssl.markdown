@@ -1,0 +1,64 @@
+---
+layout:  post
+title:   "SSL + nginx = A+"
+date:    2018-01-02 00:00:00 +0000
+excerpt: ""
+image:   ""
+---
+
+If you want to use the same IP for few sites, you need [SNI][sni] support by target browsers (some legacy browser have not it).
+
+For HTTP2 modern browser use [ALPN][alpn] instead NPN, so check what you have installed OpenSSL with version 1.0.2+ to have ALPN!
+
+I assume you have certificates, for example, I write how to obtain it in [previous post][letsencrypt-post].
+
+Yes you can think this is yet another SSL configuration for nginx, so this is my result after longspun research:
+
+
+```
+server {
+    listen 443 ssl http2;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
+
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_session_tickets off;
+
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    resolver 8.8.8.8 8.8.4.4;
+
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE:+AES256:-3DES:RSA+AES:!NULL:!RC4';
+
+    add_header Strict-Transport-Security "max-age=15768000";
+    ...
+}
+```
+
+
+Some notes about this configuration:
+
+- you should set `ssl_trusted_certificate` to enable `ssl_stapling`
+- as `resolver` you can use your local DNS like [dnsmasq][dnsmasq]
+- `ssl_session_tickets` should be `off` for all server configurations otherwise you can get [strage error in some browser][ssl_session_tickets], so it's better to set it in `http {}`
+- `Strict-Transport-Security` header should have age more than six months, which one add `+` to your grade
+- for `ssl_ciphers` I use ECDHE ciphers instead DHE, so no need to set `ssl_dhparam` and generate dhparam.pem with 2048 bits
+
+
+As result I get 'A+' by [SSL Server Test from SSL Labs][ssltest].
+
+P.S. You can check [configuration generator for different web servers][mozilla-ssl-config-generator] with recommendations from Mozilla.
+
+
+[ssltest]: https://www.ssllabs.com/ssltest/
+[sni]: https://tools.ietf.org/html/rfc6066#section-3
+[alpn]: https://tools.ietf.org/html/rfc7301
+[letsencrypt-post]: https://sprql.space/2018/01/01/letsencrypt.html
+[ssl_session_tickets]: https://community.letsencrypt.org/t/errors-from-browsers-with-ssl-session-tickets-off-nginx/18124/5
+[dnsmasq]: http://www.thekelleys.org.uk/dnsmasq/doc.html
+[mozilla-ssl-config-generator]: https://mozilla.github.io/server-side-tls/ssl-config-generator/
