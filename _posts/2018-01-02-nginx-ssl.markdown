@@ -2,7 +2,7 @@
 layout:  post
 title:   "SSL + nginx = A+"
 date:    2018-01-02 00:00:00 +0000
-excerpt: ""
+excerpt: "Short introduction how to properly configure SSL for nginx" 
 image:   ""
 ---
 
