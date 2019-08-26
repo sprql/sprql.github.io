@@ -26,17 +26,18 @@ $content-width:    800px;
 $on-palm:          600px;
 $on-laptop:        800px;
 
+$header-font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 // Import partials from the `minima` theme.
 @import "minima";
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: Ubuntu;
+  font-family: $header-font-family;
 }
 
 .site-header,
 .site-footer {
-  font-family: "Ubuntu";
+  font-family: $header-font-family;
 }
 
 .site-header {
