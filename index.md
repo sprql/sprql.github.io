@@ -11,8 +11,9 @@ layout: page
 
 ### Software Engineer
 
-I have a passion for writing simple, clean and efficient code.
-I'm using Elixir, Ruby, PostgreSQL, Go and JavaScript.
+I am passionate about writing simple, clean, and efficient code. 
+I specialize in frontend, backend, and mobile development, 
+primarily using Elixir, Ruby, PostgreSQL, Swift, Go, and JavaScript.
 
 - [github.com/sprql](https://github.com/sprql)
 - [linkedin.com/in/alexander-obukhov](https://www.linkedin.com/in/alexander-obukhov)
