@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="What an Agent Actually Does Between Prompts"><link rel="canonical" href="https://sprql.space/posts/nano-agent-loop/"><meta property="og:url" content="https://sprql.space/posts/nano-agent-loop/"><title>Nano Agent Loop - sprql</title><link rel="icon" href="/sprql.png" type="image/png"><link rel="stylesheet" href="/_astro/Layout.r7wS-1hS.css"></head><body><header class="site-header"><a class="brand" href="/" aria-label="sprql home"><img src="/sprql.png" alt="" width="32" height="32"><span>sprql</span></a><nav aria-label="Primary navigation"><a href="/posts/" aria-current="page">Blog</a><a href="/projects/">Projects</a><a href="/about/">About</a></nav></header><main>
+  <article class="post"><header class="page-head"><span class="eyebrow">June 23, 2026</span><h1>Nano Agent Loop</h1><p>What an Agent Actually Does Between Prompts</p></header><div class="prose"><p>This project started when I briefly saw a mention of a new Elixir wrapper around a bash sandbox. I had already worked on an agent harness, so I thought it would be good practice to build the loop again, this time as small as possible.</p>
+<p>I wanted to make the agent loop visible without hiding it behind a framework.</p>
+<p>I was also inspired by the <a href="https://pi.dev/">Pi harness</a>, which describes itself as a minimal agent harness. So I decided to see how quickly I could build the smallest version of the loop.</p>
+<p>The result was <a href="https://github.com/sprql/elixir-nano-agent-loop">elixir-nano-agent-loop</a>.</p>
+<p>The project name is a reference to Karpathy’s <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> and <a href="https://github.com/karpathy/nanochat">nanochat</a> projects.</p>
+<p><a href="https://github.com/sprql/elixir-nano-agent-loop">Nano Agent Loop</a> follows the same spirit, but focuses only on the agent loop. It is not a framework, a durable runtime, or a production agent system. It is a tiny example of the loop itself: prompt, model, tool, output, next step.</p>
+<p>This matters because agent systems often look more mysterious than they are.</p>
+<p>A good harness is still a complex system: tools, storage, sandboxing, UI, loops, queues, evals, and so on.</p>
+<p>But if we remove all the scaffolding, the core idea is simple: the loop.</p>
+<h2 id="the-loop">The Loop</h2>
+<ol>
+<li>Send the current context to the model</li>
+<li>Let the model either answer or request a tool call</li>
+<li>Execute the tool call in the host program</li>
+<li>Append the tool result back into the conversation</li>
+<li>Repeat until the model produces a final answer</li>
+</ol>
+<p>The interesting part is that the model can form a hypothesis, test it by running a deterministic command, read the output, notice that its assumption was incomplete, and choose the next step. This is a simple but powerful feedback loop.</p>
+<p>If we trim it down to the basics, an agent loop is mostly a state transformation. There is a conversation, a set of tools, and a function that keeps asking the model what should happen next.</p>
+<p>In simplified Elixir, the shape looks like this:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="elixir"><code><span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> run</span><span style="color:#E1E4E8">() </span><span style="color:#F97583">do</span></span>
+<span class="line"><span style="color:#E1E4E8">  tool </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Tool</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">new!</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">name:</span><span style="color:#9ECBFF"> "bash"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">callback:</span><span style="color:#F97583"> fn</span><span style="color:#E1E4E8"> commands </span><span style="color:#F97583">-></span><span style="color:#B392F0"> run_bash</span><span style="color:#E1E4E8">(commands) </span><span style="color:#F97583">end</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">  context </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Context</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">new</span><span style="color:#E1E4E8">([</span><span style="color:#B392F0">Context</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">system</span><span style="color:#E1E4E8">(@system_prompt), </span><span style="color:#B392F0">Context</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">user</span><span style="color:#E1E4E8">(prompt)])</span></span>
+<span class="line"><span style="color:#B392F0">  loop</span><span style="color:#E1E4E8">(context, tool)</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">defp</span><span style="color:#B392F0"> run_bash</span><span style="color:#E1E4E8">(commands) </span><span style="color:#F97583">do</span></span>
+<span class="line"><span style="color:#E1E4E8">  tool_output </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Session</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">exec</span><span style="color:#E1E4E8">(commands)</span></span>
+<span class="line"><span style="color:#E1E4E8">  tool_output</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">defp</span><span style="color:#B392F0"> loop</span><span style="color:#E1E4E8">(context, tool) </span><span style="color:#F97583">do</span></span>
+<span class="line"><span style="color:#F97583">  case</span><span style="color:#B392F0"> ReqLLM</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">generate_text</span><span style="color:#E1E4E8">(context, [tool]) </span><span style="color:#F97583">do</span></span>
+<span class="line"><span style="color:#E1E4E8">    %{</span><span style="color:#79B8FF">type:</span><span style="color:#79B8FF"> :tool_calls</span><span style="color:#E1E4E8">, tool_calls} </span><span style="color:#F97583">-></span></span>
+<span class="line"><span style="color:#E1E4E8">      next_context </span><span style="color:#F97583">=</span><span style="color:#B392F0"> Context</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">execute_and_append_tools</span><span style="color:#E1E4E8">(tool_calls, tool)</span></span>
+<span class="line"><span style="color:#B392F0">      loop</span><span style="color:#E1E4E8">(next_context, tool)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    %{</span><span style="color:#79B8FF">text:</span><span style="color:#E1E4E8"> text} </span><span style="color:#F97583">-></span></span>
+<span class="line"><span style="color:#E1E4E8">      text </span><span style="color:#6A737D"># final result</span></span>
+<span class="line"><span style="color:#F97583">  end</span></span>
+<span class="line"><span style="color:#F97583">end</span></span></code></pre>
+<p>The model does not execute the tool. The harness does that. The model only asks to call a tool:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="elixir"><code><span class="line"><span style="color:#E1E4E8">%{</span></span>
+<span class="line"><span style="color:#79B8FF">  name:</span><span style="color:#9ECBFF"> "bash"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  arguments:</span><span style="color:#E1E4E8"> %{</span></span>
+<span class="line"><span style="color:#79B8FF">    command:</span><span style="color:#9ECBFF"> "wc -l tx.txt &#x26;&#x26; head -5 tx.txt"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>The harness decides whether the request is allowed. Then it runs the command in a constrained environment, captures the output, and feeds the result back.</p>
+<p>This closes the loop. The output becomes part of the next model call. The next step is no longer based only on the prompt. It is based on what actually happened.</p>
+<p>Step by step, the LLM can move closer to the goal. It can also get stuck, or repeat the same kind of step in a cycle.</p>
+<h2 id="demo-time">Demo Time</h2>
+<p>Let’s see how it works in action:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="sh"><code><span class="line"><span style="color:#B392F0">elixir</span><span style="color:#9ECBFF"> nano_agent_loop.exs</span><span style="color:#9ECBFF"> "Create /work/sales.csv, compute revenue by product with shell commands, write /work/report.txt, and show it."</span></span></code></pre>
+<p>The loop was just 5 turns:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="log"><code><span class="line"><span style="color:#E1E4E8">turn </span><span style="color:#79B8FF">1</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">assistant -> bash</span></span>
+<span class="line"><span style="color:#E1E4E8">  ls -la /work </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">>/dev/</span><span style="color:#79B8FF">null</span><span style="color:#E1E4E8"> || mkdir -p /work &#x26;&#x26; ls -la /work</span></span>
+<span class="line"><span style="color:#E1E4E8">tool -></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;no output></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">turn </span><span style="color:#79B8FF">2</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">assistant -> bash</span></span>
+<span class="line"><span style="color:#E1E4E8">  cat > /work/sales.csv &#x3C;&#x3C;</span><span style="color:#9ECBFF">'EOF'</span></span>
+<span class="line"><span style="color:#E1E4E8">  product,quantity,unit_price</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget,</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">50</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget,</span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">99</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget,</span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">50</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet,</span><span style="color:#79B8FF">7</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">99</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">  EOF</span></span>
+<span class="line"><span style="color:#E1E4E8">  printf </span><span style="color:#9ECBFF">'Created sales.csv:\n'</span></span>
+<span class="line"><span style="color:#E1E4E8">  sed -n </span><span style="color:#9ECBFF">'1,20p'</span><span style="color:#E1E4E8"> /work/sales.csv</span></span>
+<span class="line"><span style="color:#E1E4E8">tool -></span></span>
+<span class="line"><span style="color:#E1E4E8">  Created </span><span style="color:#79B8FF">sales.csv</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">  product,quantity,unit_price</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget,</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">50</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget,</span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">99</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget,</span><span style="color:#79B8FF">4</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">50</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet,</span><span style="color:#79B8FF">7</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">9</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">99</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet,</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">,</span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">turn </span><span style="color:#79B8FF">3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">assistant -> bash</span></span>
+<span class="line"><span style="color:#E1E4E8">  awk -F, </span><span style="color:#9ECBFF">'NR>1 {rev[$1]+=$2*$3} END {printf "Revenue by product\n"; printf "%-10s %10s\n", "Product", "Revenue"; for (p in rev) printf "%-10s %10.2f\n", p, rev[p]}'</span><span style="color:#E1E4E8"> /work/sales.csv | sort -k1,</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8"> > /work/report.tmp</span></span>
+<span class="line"><span style="color:#E1E4E8">  # Keep header first, sorted data after header</span></span>
+<span class="line"><span style="color:#E1E4E8">  { sed -n </span><span style="color:#9ECBFF">'1,2p'</span><span style="color:#E1E4E8"> /work/report.tmp; sed -n </span><span style="color:#9ECBFF">'3,$p'</span><span style="color:#E1E4E8"> /work/report.tmp | sort; } > /work/report.txt</span></span>
+<span class="line"><span style="color:#E1E4E8">  rm /work/report.tmp</span></span>
+<span class="line"><span style="color:#E1E4E8">  printf </span><span style="color:#9ECBFF">'Report contents:\n'</span></span>
+<span class="line"><span style="color:#E1E4E8">  sed -n </span><span style="color:#9ECBFF">'1,20p'</span><span style="color:#E1E4E8"> /work/report.txt</span></span>
+<span class="line"><span style="color:#E1E4E8">tool -></span></span>
+<span class="line"><span style="color:#E1E4E8">  Report contents:</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet          </span><span style="color:#79B8FF">33</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget          </span><span style="color:#79B8FF">79</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">92</span></span>
+<span class="line"><span style="color:#E1E4E8">  Product       Revenue</span></span>
+<span class="line"><span style="color:#E1E4E8">  Revenue by product</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget          </span><span style="color:#79B8FF">35</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">00</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">turn </span><span style="color:#79B8FF">4</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">assistant -> bash</span></span>
+<span class="line"><span style="color:#E1E4E8">  {</span></span>
+<span class="line"><span style="color:#E1E4E8">    printf </span><span style="color:#9ECBFF">'Revenue by product\n'</span></span>
+<span class="line"><span style="color:#E1E4E8">    printf </span><span style="color:#9ECBFF">'%-10s %10s\n'</span><span style="color:#9ECBFF"> 'Product'</span><span style="color:#9ECBFF"> 'Revenue'</span></span>
+<span class="line"><span style="color:#E1E4E8">    awk -F, </span><span style="color:#9ECBFF">'NR>1 {rev[$1]+=$2*$3} END {for (p in rev) printf "%-10s %10.2f\n", p, rev[p]}'</span><span style="color:#E1E4E8"> /work/sales.csv | sort</span></span>
+<span class="line"><span style="color:#E1E4E8">  } > /work/report.txt</span></span>
+<span class="line"><span style="color:#E1E4E8">  printf </span><span style="color:#9ECBFF">'Report contents:\n'</span></span>
+<span class="line"><span style="color:#E1E4E8">  sed -n </span><span style="color:#9ECBFF">'1,20p'</span><span style="color:#E1E4E8"> /work/report.txt</span></span>
+<span class="line"><span style="color:#E1E4E8">tool -></span></span>
+<span class="line"><span style="color:#E1E4E8">  Report contents:</span></span>
+<span class="line"><span style="color:#E1E4E8">  Revenue by product</span></span>
+<span class="line"><span style="color:#E1E4E8">  Product       Revenue</span></span>
+<span class="line"><span style="color:#E1E4E8">  Dadjet          </span><span style="color:#79B8FF">33</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">  Gadget          </span><span style="color:#79B8FF">79</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">92</span></span>
+<span class="line"><span style="color:#E1E4E8">  Widget          </span><span style="color:#79B8FF">35</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">00</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">turn </span><span style="color:#79B8FF">5</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">final:</span></span>
+<span class="line"><span style="color:#E1E4E8">Created `/work/sales.csv`, computed revenue by product using `awk`, wrote `/work/report.txt`, and verified/showed the report:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">Revenue by product</span></span>
+<span class="line"><span style="color:#E1E4E8">Product       Revenue</span></span>
+<span class="line"><span style="color:#E1E4E8">Dadjet          </span><span style="color:#79B8FF">33</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">75</span></span>
+<span class="line"><span style="color:#E1E4E8">Gadget          </span><span style="color:#79B8FF">79</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">92</span></span>
+<span class="line"><span style="color:#E1E4E8">Widget          </span><span style="color:#79B8FF">35</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">00</span></span></code></pre>
+<p>The useful part is not that it succeeds immediately. The useful part is that it can notice a bad result and try again.</p>
+<p>This kind of loop was not always useful enough on its own. As LLMs became better, the same simple loop became much more useful.</p>
+<h2 id="what-this-is-not">What This Is Not</h2>
+<p>This nano loop is intentionally small, so it leaves many useful parts of a modern harness out of scope. But even without these parts, a tiny implementation can still be useful. If you give the model one capable tool, like bash, the loop already has enough to do real work.</p>
+<p>Make the loop small enough, and the magic disappears. What remains is just a feedback loop: try, observe, repeat.</p>
+<h2 id="references">References</h2>
+<ol>
+<li><a href="https://github.com/sprql/elixir-nano-agent-loop">elixir-nano-agent-loop</a></li>
+<li><a href="https://pi.dev/">Pi harness</a></li>
+<li><a href="https://github.com/karpathy/nanoGPT">nanoGPT</a></li>
+<li><a href="https://github.com/karpathy/nanochat">nanochat</a></li>
+</ol>
+</div></article>
+</main><footer class="site-footer"><span>&copy; 2026 sprql.space</span></footer></body></html>
